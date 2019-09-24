@@ -30,8 +30,8 @@ ruleTester.run("map", rule, {
         {
             code: "_.map([1, 2, 3], () => {})",
             errors: [{
-                message: "Use native JavaScript Array.map() method for arrays instead of _.map()",
-                type: "MemberExpression"
+                message: "Use native JavaScript Array.map() instead of _.map()",
+                type: "CallExpression"
             }]
         }
     ]
