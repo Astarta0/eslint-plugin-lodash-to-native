@@ -13,11 +13,12 @@ const config = {
 };
 
 const code = `
-_.map(getItems(), someFunction );
+    _.map(getItems(), a => a * 10 )
 `;
 
 linter.defineRule("lodash-to-native", plugin);
 
 const messages = linter.verify(code, config, { filename: 'debug.js' });
 
+console.log(code);
 console.log(util.inspect(messages, { colors: true, depth: null }));

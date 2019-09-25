@@ -8,9 +8,10 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const rule = require("../../../lib/rules/map"),
+const rule = require("../../../lib/rules/map");
+const RuleTester = require("eslint").RuleTester;
 
-    RuleTester = require("eslint").RuleTester;
+const oneLine = str => str.replace(/\s+/g, ' ').trim();
 
 
 //------------------------------------------------------------------------------
@@ -19,11 +20,12 @@ const rule = require("../../../lib/rules/map"),
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2015 } });
 
-
 ruleTester.run("map", rule, {
 
     valid: [
-        '_.map({ a: 4, b: 8 }, () => {});'
+        '_.map({ a: 4, b: 8 }, () => {});',
+        'const obj = {}; const myVar = _.map(obj, fn);',
+        'const obj = {}; function z(){ return _.map(obj, () => {}) }'
     ],
 
     invalid: [
@@ -70,9 +72,9 @@ ruleTester.run("map", rule, {
                 messageId: "useArrayMap",
                 type: "CallExpression"
             }],
-            output:'const mapFn = a => a * 10;\n' +
-                'const collection = getItems();\n' +
-                'Array.isArray(collection) ? collection.map(mapFn) : _.map(collection, mapFn)'
+            output: 'const collection = getItems();\n' +
+                    'const callback = a => a * 10;\n' +
+                    'Array.isArray(collection) ? collection.map(callback) : _.map(collection, callback)'
         },
 
         {
@@ -81,9 +83,9 @@ ruleTester.run("map", rule, {
                 messageId: "useArrayMap",
                 type: "CallExpression"
             }],
-            output:'const mapFn = function(a) { return a + 10; };\n' +
-                'const collection = getItems();\n' +
-                'Array.isArray(collection) ? collection.map(mapFn) : _.map(collection, mapFn)'
+            output: 'const collection = getItems();\n' +
+                    'const callback = function(a) { return a + 10; };\n' +
+                    'Array.isArray(collection) ? collection.map(callback) : _.map(collection, callback)'
         },
 
         {
@@ -93,23 +95,19 @@ ruleTester.run("map", rule, {
                 type: "CallExpression"
             }],
             output: 'const collection = getItems();\n' +
-                'Array.isArray(collection) ? collection.map(someFunction) : _.map(collection, someFunction)'
+                'Array.isArray(collection) ? collection.map(someFunction) : _.map(collection, someFunction);'
         },
-        // Когда не удалось определить тип переменной по скоупам, должны заменить с проверкой
 
-        // здесь выйдем по условию  if(!variablesObj) return;
-        // TODO - замена с проверкой
+        // Когда не удалось определить тип переменной по скоупам, должны заменить с проверкой
         {
             code: "const a = _.map(someVariable, fn);",
             errors: [{
                 messageId: "useArrayMap",
                 type: "CallExpression"
             }],
-            output: 'const a = Array.isArray(someVariable) ? someVariable.map(fn) : _.map(someVariable, fn)'
+            output: 'const a = Array.isArray(someVariable) ? someVariable.map(fn) : _.map(someVariable, fn);'
         },
 
-        // здесь не можем определить тип переменной, нет defNode.init - надо делать замену с проверкой
-        // TODO править: срабатывает правило на прошлые замены, дублирование кода в результате
         {
             code: "const someVariable = getAction();" +
                 "const a = _.map(someVariable, fn);",
@@ -117,9 +115,43 @@ ruleTester.run("map", rule, {
                 messageId: "useArrayMap",
                 type: "CallExpression"
             }],
-            output: 'const a = Array.isArray(someVariable) ? someVariable.map(fn) : _.map(someVariable, fn)'
+            output: 'const someVariable = getAction();'+'const a = Array.isArray(someVariable) ? someVariable.map(fn) : _.map(someVariable, fn);'
+        },
+        /////////
+
+        {
+            code: '_.map([].concat([]), fn);',
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const collection = [].concat([]);\n' +
+                'Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn);'
         },
 
+        {
+            code: oneLine(`
+                const collection = [1, 2, 3];
+                const callback = () => {};
+                const result = _.map(getItems(), a => a * 10);
+            `),
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const collection = [1, 2, 3]; const callback = () => {}; const collection1 = getItems();\n' +
+                'const callback1 = a => a * 10;\n' +
+                'const result = Array.isArray(collection1) ? collection1.map(callback1) : _.map(collection1, callback1);'
+        },
+
+        {
+            code: `const result = _.map(something, fn, ctx);`,
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const result = Array.isArray(something) ? something.map(fn, ctx) : _.map(something, fn, ctx);'
+        }
 
     ]
 });
