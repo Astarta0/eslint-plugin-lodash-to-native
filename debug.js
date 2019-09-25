@@ -13,10 +13,7 @@ const config = {
 };
 
 const code = `
-    const items = [1, 2];
-    function asd () {
-    _.map([1, 2]);
-    }
+_.map(getItems(), someFunction );
 `;
 
 linter.defineRule("lodash-to-native", plugin);
