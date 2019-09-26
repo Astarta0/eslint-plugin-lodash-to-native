@@ -1,6 +1,11 @@
 /**
- * @fileoverview description for rule
- * @author Anastasia
+ * @fileoverview
+ * Правило должно находить использование функции из Lodash _.map(),
+ * и, если это возможно, предлагать заменить его на использование нативного Array.prototype.map().
+ * Если нельзя определить точно, что первый аргумент в map является массивом, то
+ * добавляется проверка, через тернарный оператор:
+ * Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn)
+ * @author Astarta0
  */
 "use strict";
 
@@ -117,7 +122,6 @@ ruleTester.run("map", rule, {
             }],
             output: 'const someVariable = getAction();'+'const a = Array.isArray(someVariable) ? someVariable.map(fn) : _.map(someVariable, fn);'
         },
-        /////////
 
         {
             code: '_.map([].concat([]), fn);',

@@ -1,13 +1,13 @@
 {
   "name": "eslint-plugin-lodash-to-native",
   "version": "0.0.0",
-  "description": "description of plugin",
+  "description": "Replace _.map() with Array.prototype.map() if first argument is array",
   "keywords": [
     "eslint",
     "eslintplugin",
     "eslint-plugin"
   ],
-  "author": "Anastasia",
+  "author": "Astarta0",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",

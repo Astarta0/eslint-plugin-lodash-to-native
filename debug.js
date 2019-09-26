@@ -8,7 +8,7 @@ const config = {
         "ecmaVersion": 6
     },
     rules: {
-        "lodash-to-native": "error"
+        "map": "error"
     }
 };
 
@@ -16,7 +16,7 @@ const code = `
     _.map(getItems(), a => a * 10 )
 `;
 
-linter.defineRule("lodash-to-native", plugin);
+linter.defineRule("map", plugin);
 
 const messages = linter.verify(code, config, { filename: 'debug.js' });
 
