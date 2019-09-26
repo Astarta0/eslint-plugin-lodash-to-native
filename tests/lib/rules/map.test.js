@@ -94,13 +94,13 @@ ruleTester.run("map", rule, {
         },
 
         {
-            code: "_.map(getItems(), someFunction );",
+            code: "const result = _.map(getItems(), someFunction );",
             errors: [{
                 messageId: "useArrayMap",
                 type: "CallExpression"
             }],
             output: 'const collection = getItems();\n' +
-                'Array.isArray(collection) ? collection.map(someFunction) : _.map(collection, someFunction);'
+                    'const result = Array.isArray(collection) ? collection.map(someFunction) : _.map(collection, someFunction);'
         },
 
         // Когда не удалось определить тип переменной по скоупам, должны заменить с проверкой
@@ -130,7 +130,7 @@ ruleTester.run("map", rule, {
                 type: "CallExpression"
             }],
             output: 'const collection = [].concat([]);\n' +
-                'Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn);'
+                    'Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn);'
         },
 
         {
@@ -144,8 +144,8 @@ ruleTester.run("map", rule, {
                 type: "CallExpression"
             }],
             output: 'const collection = [1, 2, 3]; const callback = () => {}; const collection1 = getItems();\n' +
-                'const callback1 = a => a * 10;\n' +
-                'const result = Array.isArray(collection1) ? collection1.map(callback1) : _.map(collection1, callback1);'
+                    'const callback1 = a => a * 10;\n' +
+                    'const result = Array.isArray(collection1) ? collection1.map(callback1) : _.map(collection1, callback1);'
         },
 
         {
@@ -155,6 +155,28 @@ ruleTester.run("map", rule, {
                 type: "CallExpression"
             }],
             output: 'const result = Array.isArray(something) ? something.map(fn, ctx) : _.map(something, fn, ctx);'
+        },
+
+        {
+            code: `const result = _.map(something, fn, ctx);\n` +
+                `function myFn() { let nothing = getItems(); return _.map(nothing, squareFn); }\n` +
+                'const callback = _.map(result, (a, b) => a + b);',
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            },
+            {
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            },
+            {
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const result = Array.isArray(something) ? something.map(fn, ctx) : _.map(something, fn, ctx);\n' +
+                    'function myFn() { let nothing = getItems(); return Array.isArray(nothing) ? nothing.map(squareFn) : _.map(nothing, squareFn); }\n' +
+                    'const callback1 = (a, b) => a + b;\n' +
+                    'const callback = Array.isArray(result) ? result.map(callback1) : _.map(result, callback1);'
         }
 
     ]
