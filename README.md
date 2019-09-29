@@ -46,6 +46,7 @@ Array.isArray(collection) ? collection.map(callback) : _.map(collection, callbac
 хранение collection и callback`a, которые передаются в вызов _.map().
 Если с таким именем переменные существуют - правило меняет имя путем добавления числа, пока не найдет свободное имя.
 8. Если в вызов _.map был передан аргумент контекста, он не теряется.
+9. Так же обрабатываются некоторые случаи с условиями.
 
 
 
@@ -60,13 +61,13 @@ Array.isArray(collection) ? collection.map(callback) : _.map(collection, callbac
 npm i eslint babel-eslint --save-dev
 ```
 
-2. Установка плагина :
+2. Установка плагина:
 
 ```
 npm install -S github.com/Astarta0/eslint-plugin-lodash-to-native.git
 ```
 
-3 .eslintrc
+3. .eslintrc
 ```
 {
   "parser": "babel-eslint",
