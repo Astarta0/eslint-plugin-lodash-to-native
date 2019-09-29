@@ -30,7 +30,12 @@ ruleTester.run("map", rule, {
     valid: [
         '_.map({ a: 4, b: 8 }, () => {});',
         'const obj = {}; const myVar = _.map(obj, fn);',
-        'const obj = {}; function z(){ return _.map(obj, () => {}) }'
+        'const obj = {}; function z(){ return _.map(obj, () => {}) }',
+        'if(Array.isArray(collection)) {\n' +
+        '    qwer = collection.map(fn);\n' +
+        '} else {\n' +
+        '    qwer = _.map(collection, fn);\n' +
+        '}'
     ],
 
     invalid: [
