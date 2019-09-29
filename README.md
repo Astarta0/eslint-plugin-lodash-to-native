@@ -64,7 +64,8 @@ npm i eslint babel-eslint --save-dev
 2. Установка плагина:
 
 ```
-npm install -S github.com/Astarta0/eslint-plugin-lodash-to-native.git
+npm install -S https://github.com/Astarta0/eslint-plugin-lodash-to-native.git
+
 ```
 
 3. .eslintrc
