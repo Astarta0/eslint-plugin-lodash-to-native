@@ -31,6 +31,8 @@ ruleTester.run("map", rule, {
         '_.map({ a: 4, b: 8 }, () => {});',
         'const obj = {}; const myVar = _.map(obj, fn);',
         'const obj = {}; function z(){ return _.map(obj, () => {}) }',
+        'const r = Array.isArray(collection) ? asd() : _.map(collection, fn1);',
+        'const r = !Array.isArray(collection) ? _.map(collection, fn1) : asd();',
         'if(Array.isArray(collection)) {\n' +
         '    qwer = collection.map(fn);\n' +
         '} else {\n' +
@@ -136,6 +138,42 @@ ruleTester.run("map", rule, {
             }],
             output: 'const collection = [].concat([]);\n' +
                     'Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn);'
+        },
+
+        {
+            code: '_.map(collection, fn).map(another)',
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: '(Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn)).map(another)'
+        },
+
+        {
+            code: 'const r1 = Array.isArray(collection) ? _.map(collection, fn1) : asd();',
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const r1 = Array.isArray(collection) ? collection.map(fn1) : asd();'
+        },
+
+        {
+            code: 'const r1 = !Array.isArray(collection) ? asd() : _.map(collection, fn1);',
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const r1 = !Array.isArray(collection) ? asd() : collection.map(fn1);'
+        },
+
+        {
+            code: 'const r = null == 0 ? _.map(collection, fn) : another();',
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const r = null == 0 ? Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn) : another();'
         },
 
         {

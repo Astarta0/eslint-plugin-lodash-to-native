@@ -13,12 +13,17 @@ const config = {
 };
 
 const code = `
-    _.map(getItems(), a => a * 10 )
+    _.map(collection, fn);
 `;
 
 linter.defineRule("map", plugin);
 
-const messages = linter.verify(code, config, { filename: 'debug.js' });
+const messages = linter.verifyAndFix(code, config, { filename: 'debug.js' });
 
+console.log('=============================================================');
+console.log('Before:');
 console.log(code);
+console.log('After:');
+console.log(messages.output);
+console.log('=============================================================');
 console.log(util.inspect(messages, { colors: true, depth: null }));
