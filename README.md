@@ -54,16 +54,34 @@ Array.isArray(collection) ? collection.map(callback) : _.map(collection, callbac
 
 ## Installation
 
-Ставим ESLint
+1. Ставим ESLint, babel-eslint
 
 ```
-npm i eslint --save-dev
+npm i eslint babel-eslint --save-dev
 ```
 
-Установка плагина :
+2. Установка плагина :
 
 ```
 npm install -S github.com/Astarta0/eslint-plugin-lodash-to-native.git
+```
+
+3 .eslintrc
+```
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
+  },
+  "plugins": [
+    "lodash-to-native"
+  ],
+  "rules": {
+    "lodash-to-native/map": "error"
+  }
+}
 ```
 
 
