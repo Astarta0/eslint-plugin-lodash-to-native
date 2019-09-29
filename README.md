@@ -54,31 +54,18 @@ Array.isArray(collection) ? collection.map(callback) : _.map(collection, callbac
 
 ## Installation
 
-You'll first need to install [ESLint](http://eslint.org):
+Ставим ESLint
 
 ```
-$ npm i eslint --save-dev
+npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-lodash-to-native`:
+Установка плагина :
 
 ```
-$ npm install eslint-plugin-lodash-to-native --save-dev
+npm install -S github.com/Astarta0/eslint-plugin-lodash-to-native.git
 ```
 
-**Note:** If you installed ESLint globally (using the `-g` flag) then you must also install `eslint-plugin-lodash-to-native` globally.
-
-## Usage
-
-Add `lodash-to-native` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
-
-```json
-{
-    "plugins": [
-        "lodash-to-native"
-    ]
-}
-```
 
 
 
