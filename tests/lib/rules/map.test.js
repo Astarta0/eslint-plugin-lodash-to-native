@@ -33,11 +33,17 @@ ruleTester.run("map", rule, {
         'const obj = {}; function z(){ return _.map(obj, () => {}) }',
         'const r = Array.isArray(collection) ? asd() : _.map(collection, fn1);',
         'const r = !Array.isArray(collection) ? _.map(collection, fn1) : asd();',
+
         'if(Array.isArray(collection)) {\n' +
         '    qwer = collection.map(fn);\n' +
         '} else {\n' +
         '    qwer = _.map(collection, fn);\n' +
-        '}'
+        '}',
+
+        'let _ = require(\'lodash\');\n' +
+        'let a = _.map({a : \'asd\', b: 2}, c => c*5);\n' +
+        '_ = {map: () => []};\n' +
+        'let b = _.map([1, 2, 3], someFn);'
     ],
 
     invalid: [
@@ -174,6 +180,21 @@ ruleTester.run("map", rule, {
                 type: "CallExpression"
             }],
             output: 'const r = null == 0 ? Array.isArray(collection) ? collection.map(fn) : _.map(collection, fn) : another();'
+        },
+
+        {
+            code: 'const _ = require(\'lodash\');\n' +
+                  'var m1 = _.map([], fn);\n' +
+                  '_ = {map: () => []};\n' +
+                  'var m2 = _.map([], fn);',
+            errors: [{
+                messageId: "useArrayMap",
+                type: "CallExpression"
+            }],
+            output: 'const _ = require(\'lodash\');\n' +
+                    'var m1 = [].map(fn);\n' +
+                    '_ = {map: () => []};\n' +
+                    'var m2 = _.map([], fn);'
         },
 
         {
